@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>景点管理</title>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/jquery-confirm.min.js"></script>
+		<!--景点数据导入-->
+		<script type="text/javascript" src="js/spot.js"></script>
+		<!--存储数据-->
+		<script src="https://cdn.bootcdn.net/ajax/libs/FileSaver.js/2.0.2/FileSaver.js"></script>
+		
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/materialdesignicons.min.css" rel="stylesheet">
+		<link href="css/style.min.css" rel="stylesheet">
+		<link href="css/jquery-confirm.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="toolbar-btn-action">
+		  <a class="btn btn-primary m-r-5" href="#!">+ 新增</a>
+		</div>
+		<div class="table-responsive">
+		  <table class="table">
+			<thead>
+			  <tr>
+				<th>名称</th>
+				<th>x坐标</th>
+				<th>y坐标</th>
+				<th>推荐度</th>
+				<th>推荐游玩时间</th>
+				<th>景点信息</th>
+				<th>操作</th>
+			  </tr>
+			</thead>
+			 <tbody>
+			  
+			 </tbody>
+			</table>
+		</div>
+	</body>
+	<script type="text/javascript">
+		for(let i = 0;i < spot_data.length;i++) {
+			$("table > tbody ").append(
+				'<tr>' +
+					'<td id="spot-name">' + spot_data[i].name + "</td>"+
+					'<td id="spot-x">' + spot_data[i].x + "</td>"+
+					'<td id="spot-y">' + spot_data[i].y + "</td>"+
+					'<td id="spot-rec">' + spot_data[i].recommend + "</td>"+
+					'<td id="spot-time">' + spot_data[i].time + "</td>"+
+					'<td id="spot-info">' + spot_data[i].info + "</td>"+
+					"<td>"+
+					  '<div class="btn-group">'+
+						'<input type="button" class="btn btn-xs btn-default" value="编辑" id="edit"></input>'+
+						'<input type="button" class="btn btn-xs btn-default" value="删除" id="delete"></input>'+
+					  "</div>"+
+					"</td>"+
+				"</tr>"
+			);
+		}
+		$("table > tbody > tr > td > div > #edit").click(function() {
+			let content = $(this).parent().parent().parent();
+			$.confirm({
+				title: '提示',
+				content: '' +
+				'<form action="" class="formName">' +
+				'<div class="form-group">' +
+				'<label>景点名称</label>' +
+				'<input type="text" placeholder="请输入景点名称.." class="name form-control" value="' + content.find("#spot-name").text() + '" readonly/>' +
+				'</div>' +
+				'<label>x坐标</label>' +
+				'<input type="text" placeholder="请输入x坐标.." class="x form-control" value="' + content.find("#spot-x").text() + '" required/>' +
+				'</div>' +
+				'<label>y坐标</label>' +
+				'<input type="text" placeholder="请输入y坐标.." class="y form-control" value="' + content.find("#spot-y").text() + '" required/>' +
+				'</div>' +
+				'<label>推荐度(0-5)</label>' +
+				'<input type="number" placeholder="请输入推荐度.." class="rec form-control" value="' + content.find("#spot-rec").text() + '" required/>' +
+				'</div>' +
+				'<label>推荐游玩时间（分钟）</label>' +
+				'<input type="number" placeholder="请输入游玩时间.." class="time form-control" value="' + content.find("#spot-time").text() + '" required/>' +
+				'</div>' +
+				'<label>景点信息</label>' +
+				'<input type="text" placeholder="请输入景点信息.." class="info form-control" value="' + content.find("#spot-info").text() + '" required/>' +
+				'</div>' +
+				'</form>',
+				buttons: {
+					formSubmit: {
+						text: '提交',
+						btnClass: 'btn-blue',
+						action: function () {
+							let name = this.$content.find('.name').val();
+							for(let i = 0;i < spot_data.length;i++) {
+								if(spot_data[i].name == name) {
+									console.log(this.$content.find('.rec').val());
+									spot_data[i].x = this.$content.find('.x').val();
+									spot_data[i].y = this.$content.find('.y').val();
+									spot_data[i].recommend = this.$content.find('.rec').val();
+									spot_data[i].time = this.$content.find('.time').val();
+									spot_data[i].info = this.$content.find('.info').val();
+								}
+							}
+							let blob = new Blob([JSON.stringify(spot_data)], {type: ""});
+							saveAs(blob, "js/spott.js");
+							$.alert("修改成功！");
+						}
+					},
+					cancel: {
+						text: '取消'
+					},
+				},
+			});
+		})
+	</script>
+</html>
