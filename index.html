@@ -30,6 +30,8 @@
 	<script type="text/javascript" src="js/DFS.js"></script>
 	<!--堆排序导入-->
 	<script type="text/javascript" src="js/heapSort.js"></script>
+	<!--冒泡排序导入-->
+	<script type="text/javascript" src="js/bubbleSort.js"></script>
 	<!--levenshtein算法导入-->
 	<script type="text/javascript" src="js/levenshtein.js"></script>
 	
@@ -37,6 +39,15 @@
 	<script type="text/javascript" src="js/ac_automation.js"></script>
 	<!--禁忌搜索算法导入-->
 	<script type="text/javascript" src="js/ts.js"></script>
+	<!--mmc队列算法导入-->
+	<script type="text/javascript" src="js/mmc_queue_model.js"></script>
+	<!--spfa算法导入-->
+	<script type="text/javascript" src="js/spfa.js"></script>
+	
+	<!--BF算法导入-->
+	<script type="text/javascript" src="js/BF.js"></script>
+	<!--Floyd算法导入-->
+	<script type="text/javascript" src="js/Floyd.js"></script>
 	
 	<link href="css/bootstrap.min.css" rel="stylesheet"/>
 	<link href="css/materialdesignicons.min.css" rel="stylesheet"/>
@@ -61,11 +72,14 @@
 	  <a href="##" data-toggle="dropdown" class="dropdown-toggle">游客服务<span class="caret"></span></a>
 	  <!--二级菜单-->
 	  <ul class="dropdown-menu">
-	   <li><a href="#route-guide" id="guide-button">路线导航</a></li>
+	   <li><a href="#route-guide" id="guide-button">路线导航（Dijkstra）</a></li>
+	   <li><a href="#route-guide-1" id="guide-button-1">路线导航（SPFA）</a></li>
+	   <li><a href="#route-guide-2" id="guide-button-2">路线导航（Floyd）</a></li>
 	   <li><a href="#route-recommend" id="recommend-button">景点推荐</a></li>
 	   <li><a href="#all-spots" id="all-spots-button">游览所有景点（贪心 + 2-opt）</a></li>
 	   <li><a href="#all-spots-1" id="all-spots-button-1">游览所有景点（禁忌搜索）</a></li>
 	   <li><a href="#travel-time" id="travel-time-button">游玩时间规划</a></li>
+	   <li><a href="#spot-queue" id="spot-queue-button">景点排队</a></li>
 	  </ul>
 	  <li><a href="login.html">管理员登录</a></li>
 	  </li>
@@ -82,7 +96,7 @@
 	<!--地图-->
 	<div id="allmap"></div>
 	
-	<!--路线搜索侧边栏-->
+	<!--路线搜索（Dijkstra）侧边栏-->
 	<div id="route-guide">
 		<h2 style="color: #e7eaed;">路线导航</h2>
 		<div class="form-group" rol="search">
@@ -100,6 +114,46 @@
 			<input type="button" class="btn btn-danger" onclick="javascript:$.pageslide.close()" value="关闭"></a>
 		</div>
 		<div id="guide-path"></div>	
+	</div>
+	
+	<!--路线搜索（SPFA）侧边栏-->
+	<div id="route-guide-1">
+		<h2 style="color: #e7eaed;">路线导航</h2>
+		<div class="form-group" rol="search">
+			<div class="autocomplete">
+				<div class="form-group">
+					<label class="sr-only" for="start-spot-1">出发地</label>
+					<input type="text" id="start-spot-1" name="start-spot-1" class="form-control" placeholder="请输入出发地.." autocomplete="off"/>
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="end-spot-1">目的地</label>
+					<input type="text" id="end-spot-1" name="end-spot-1" class="form-control" placeholder="请输入目的地.." autocomplete="off"/>
+				</div>
+			</div>
+			<input type="button" id="search-route-1" class="btn btn-info" value="搜索"></button>
+			<input type="button" class="btn btn-danger" onclick="javascript:$.pageslide.close()" value="关闭"></a>
+		</div>
+		<div id="guide-path-1"></div>	
+	</div>
+	
+	<!--路线搜索（Floyd）侧边栏-->
+	<div id="route-guide-2">
+		<h2 style="color: #e7eaed;">路线导航</h2>
+		<div class="form-group" rol="search">
+			<div class="autocomplete">
+				<div class="form-group">
+					<label class="sr-only" for="start-spot-2">出发地</label>
+					<input type="text" id="start-spot-2" name="start-spot-2" class="form-control" placeholder="请输入出发地.." autocomplete="off"/>
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="end-spot-1">目的地</label>
+					<input type="text" id="end-spot-2" name="end-spot-2" class="form-control" placeholder="请输入目的地.." autocomplete="off"/>
+				</div>
+			</div>
+			<input type="button" id="search-route-2" class="btn btn-info" value="搜索"></button>
+			<input type="button" class="btn btn-danger" onclick="javascript:$.pageslide.close()" value="关闭"></a>
+		</div>
+		<div id="guide-path-2"></div>	
 	</div>
 	
 	<!--景点推荐侧边栏-->
@@ -169,6 +223,22 @@
 		<div id="travel-time-spots"></div>	
 	</div>
 	
+	<!--景点排队侧边栏-->
+	<div id="spot-queue">
+		<h2 style="color: #e7eaed;">景点排队</h2>
+		<div class="form-group" rol="search">
+			<div class="autocomplete">
+				<div class="form-group">
+					<label class="sr-only" for="user-pos">景点</label>
+					<input type="text" id="spot-queue-input" class="form-control" placeholder="请输入您想排队的景点.." autocomplete="off"/>
+				</div>
+			</div>
+			<input type="button" id="search-spot-queue" class="btn btn-info" value="搜索" autocomplete="off"></button>
+			<input type="button" class="btn btn-danger" onclick="javascript:$.pageslide.close()" value="关闭"></a>
+		</div>
+		<div id="queue-info"></div>	
+	</div>
+	
 	<!--景点查找模态框-->
 	<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
 	  <div class="modal-dialog modal-sm" role="document">
@@ -235,7 +305,7 @@
 			}
 		}
 	}
-	console.log(matrix);
+
 	// 读取地图并更新邻接矩阵
 	for(let i = 0;i < edge_data.length;i++) {
 		let start = -1;
@@ -268,8 +338,6 @@
 		})
 	}
 	
-	// $("#spot-result").hide();
-	
 	// 景点搜索（KMP算法 和 Levenstein算法 实现）
 	$("#search-spot").click(function() {
 		// 先清空之前的查询结果
@@ -277,6 +345,7 @@
 		let search_info = $("#search-spot-info").val();
 		let resultSet = [];
 		for(let i = 0;i < spot_data.length;i++) {
+			BF(spot_data[i].name, search_info);
 			if(KMP(spot_data[i].name, search_info)) {
 				resultSet.push(spot_data[i].name);
 			}
@@ -288,6 +357,13 @@
 				}
 			}
 		}
+		if(resultSet.length == 0) {
+			let ans = ac_automation(spots, search_info);
+			for(let i = 0;i < ans.length;i++) {
+				resultSet.push(ans[i]);
+			}
+		}
+		
 		console.log(resultSet);
 		// 查询结果渲染
 		for(let i = 0; i < resultSet.length;i++) {
@@ -306,6 +382,8 @@
 			map.panTo(new BMap.Point(spot_data[i].x, spot_data[i].y));
 		});
 	});
+	
+	console.log(matrix);
 
 	// 路线搜索（Dijkstra算法实现）
 	$("#search-route").click(function() {
@@ -325,16 +403,16 @@
 			}
 		}
 		let dijkstra = Dijkstra(matrix, start_idx);
-		console.log(dijkstra);
-		let path = dijkstra[1][end_idx];
-		let idx_to_name = path.match(/\d+/g); // 正则表达式提取下标用于转换为景点名称
-		console.log(idx_to_name);
+		// console.log(dijkstra);
+		let _path = dijkstra[1][end_idx];
+		let idx_to_name = _path.match(/\d+/g); // 正则表达式提取下标用于转换为景点名称
+		// console.log(idx_to_name);
 		// 将景点下标替换为景点名称
 		for(let i = 0;i < idx_to_name.length;i++) {
-			path = path.replace(idx_to_name[i], spot_data[idx_to_name[i]].name);
+			_path = _path.replace(idx_to_name[i], spot_data[idx_to_name[i]].name);
 		}
-		console.log(start_name + "到" + end_name + "的最短路径为：" + path);
-		document.getElementById("guide-path").innerText = "最短路线：\n" + path;
+		// console.log(start_name + "到" + end_name + "的最短路径为：" + _path);
+		document.getElementById("guide-path").innerText = "最短路线：\n" + _path;
 		document.getElementById("guide-path").innerText += "\n最短路程：" + dijkstra[0][end_idx] + "米";
 		// 将路径颜色设置为红色
 		for(let i = 0;i < idx_to_name.length - 1;i++) {
@@ -352,6 +430,98 @@
 			polylines.push(polyline);
 			map.addOverlay(polyline); // 增加折线
 		}
+	});
+	
+	// 路线搜索（SPFA算法实现）
+	$("#search-route-1").click(function() {
+		// 清除上次查找的路线
+		for(let i = 0;i < polylines.length;i++) {
+			map.removeOverlay(polylines[i]);
+		}
+		let start_name = $("#start-spot-1").val();
+		let end_name = $("#end-spot-1").val();
+
+		let start_idx, end_idx;
+		for(let i = 0;i < spot_data.length;i++) {
+			if(spot_data[i].name == start_name) {
+				start_idx = i;
+			}
+			if(spot_data[i].name == end_name) {
+				end_idx = i;
+			}
+		}
+		let _spfa = spfa(matrix, start_idx, end_idx);
+		let path = _spfa[1];
+
+		document.getElementById("guide-path-1").innerText = "最短路线：\n";
+		for(let i = 0;i < path.length;i++) {
+			if(i == path.length - 1) {
+				document.getElementById("guide-path-1").innerText += spots[path[i]];
+			}
+			else {
+				document.getElementById("guide-path-1").innerText += spots[path[i]] + "->";
+			}
+			
+		}
+		document.getElementById("guide-path-1").innerText += "\n最短路程：" + _spfa[0][end_idx] + "米";
+		// 将路径颜色设置为红色
+		let pois = [];
+		for(let i = 0;i < path.length;i++) {
+			pois.push(new BMap.Point(spot_data[path[i]].x, spot_data[path[i]].y));
+		}
+		let polyline = new BMap.Polyline(pois, {
+			enableEditing: false,	// 是否启用线编辑，默认为false
+			enableClicking: true, // 是否响应点击事件，默认为true
+			strokeWeight:'2', // 折线的宽度，以像素为单位
+			strokeOpacity: 0.8, // 折线的透明度，取值范围0 - 1
+			strokeColor:"#ff0000", // 折线颜色
+		});
+		polylines.push(polyline);
+		map.addOverlay(polyline); // 增加折线
+	});
+	
+	// 路线搜索（Floyd算法实现）
+	$("#search-route-2").click(function() {
+		// 清除上次查找的路线
+		for(let i = 0;i < polylines.length;i++) {
+			map.removeOverlay(polylines[i]);
+		}
+		let start_name = $("#start-spot-2").val();
+		let end_name = $("#end-spot-2").val();
+	
+		let start_idx, end_idx;
+		for(let i = 0;i < spot_data.length;i++) {
+			if(spot_data[i].name == start_name) {
+				start_idx = i;
+			}
+			if(spot_data[i].name == end_name) {
+				end_idx = i;
+			}
+		}
+		let floyd = Floyd(matrix, start_idx, end_idx);
+		let path = floyd["path"];
+		let _path = path.match(/\d+/g); // 正则表达式提取下标用于转换为景点名称
+
+		// 将景点下标替换为景点名称
+		for(let i = 0;i < _path.length;i++) {
+			path = path.replace(_path[i], spot_data[_path[i]].name);
+		}
+		document.getElementById("guide-path-2").innerText = "最短路线：\n" + path;
+		document.getElementById("guide-path-2").innerText += "\n最短路程：" + floyd["dis"] + "米";
+		// 将路径颜色设置为红色
+		let pois = [];
+		for(let i = 0;i < _path.length;i++) {
+			pois.push(new BMap.Point(spot_data[_path[i]].x, spot_data[_path[i]].y));
+		}
+		let polyline = new BMap.Polyline(pois, {
+			enableEditing: false,	// 是否启用线编辑，默认为false
+			enableClicking: true, // 是否响应点击事件，默认为true
+			strokeWeight:'2', // 折线的宽度，以像素为单位
+			strokeOpacity: 0.8, // 折线的透明度，取值范围0 - 1
+			strokeColor:"#ff0000", // 折线颜色
+		});
+		polylines.push(polyline);
+		map.addOverlay(polyline); // 增加折线
 	});
 
 	// 景点推荐（Dijkstra与推荐度加权实现）
@@ -626,9 +796,31 @@
 			}
 		}
 	});
+	
+	$("#search-spot-queue").click(function() {
+		let input = $("#spot-queue-input").val();
+		let mmc = mmc_queue_model(3, 0.9, 0.4);
+		document.getElementById("queue-info").innerText = "售票所空闲的概率：" + mmc[0].toFixed(2) + "\n";
+		document.getElementById("queue-info").innerText += "平均排队长度：" + mmc[1].toFixed(2) + "人\n";
+		document.getElementById("queue-info").innerText += "平均等待时间：" + mmc[2].toFixed(2) + "分钟\n";
+		document.getElementById("queue-info").innerText += "景区内游客平均人数：" + mmc[3].toFixed(2) + "人\n";
+		document.getElementById("queue-info").innerText += "景区内平均逗留时间：" + mmc[4].toFixed(2) + "分钟";
+	});
 
-	// 路线搜索侧边栏
+	// 路线搜索侧边栏（Dijkstra）
 	$("#guide-button").pageslide({
+		direction: "right",
+		modal: true
+	});
+	
+	// 路线搜索侧边栏（SPFA）
+	$("#guide-button-1").pageslide({
+		direction: "right",
+		modal: true
+	});
+	
+	// 路线搜索侧边栏（Floyd）
+	$("#guide-button-2").pageslide({
 		direction: "right",
 		modal: true
 	});
@@ -639,13 +831,13 @@
 		modal: true
 	});
 
-	// 游玩所有景点侧边栏
+	// 游玩所有景点侧边栏（贪心算法 + 2-opt）
 	$("#all-spots-button").pageslide({
 		direction: "right",
 		modal: true
 	});
 	
-	// 游玩所有景点侧边栏
+	// 游玩所有景点侧边栏（禁忌搜索算法）
 	$("#all-spots-button-1").pageslide({
 		direction: "right",
 		modal: true
@@ -653,6 +845,12 @@
 	
 	// 游玩时间规划侧边栏
 	$("#travel-time-button").pageslide({
+		direction: "right",
+		modal: true
+	});
+	
+	// 景区排队侧边栏
+	$("#spot-queue-button").pageslide({
 		direction: "right",
 		modal: true
 	});
@@ -680,5 +878,4 @@
 		});
 		map.addOverlay(polyline); // 增加折线
 	}
-
 </script>

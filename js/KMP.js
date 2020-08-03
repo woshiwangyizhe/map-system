@@ -5,6 +5,7 @@
  * @returns {boolean} 匹配为true，不匹配为false
  */
 function KMP(dest, pattern) {
+	console.time("KMP算法的运行时间为");
 	// 根据模式串计算next数组
 	let next = new Array(pattern.length); // next数组
 	next[0] = -1;
@@ -32,8 +33,10 @@ function KMP(dest, pattern) {
 			j = next[j];
 		}
 		if(j == pattern.length) {
+			console.timeEnd("KMP算法的运行时间为");
 			return true;
 		}
 	}
+	console.timeEnd("KMP算法的运行时间为");
 	return false;
 }

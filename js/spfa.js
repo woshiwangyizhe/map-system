@@ -37,8 +37,28 @@ function get_path(path,path_arr,val){
 }
 
 function spfa(dis_matrix,start_index,end_index){
+	console.time("spfa算法的运行时间为");
 	let path=[];
 	let [dis,path_arr]=spfa_claulate(dis_matrix,start_index);
 	get_path(path,path_arr,end_index);
+	console.timeEnd("spfa算法的运行时间为");
 	return [dis,path];
 }
+
+// let testo = [];
+// for(let i = 0;i < 500;i++) {
+// 	testo.push([]);
+// }
+// for(let i = 0;i < 500;i++) {
+// 	for(let j = 0;j < 500;j++) {
+// 		if(i == j) {
+// 			testo[i][j] = 0;
+// 		}
+// 		else {
+// 			testo[i][j] = Math.ceil(Math.random()*100);
+// 		}
+// 	}
+// }
+// for(let i = 0;i < 10;i++) {
+// 	spfa(testo, 0, 1);
+// }
